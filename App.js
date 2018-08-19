@@ -1,32 +1,63 @@
 import React, {Component} from 'react';
-import { StyleSheet, ImageBackground, View, Text } from 'react-native';
+import { StyleSheet, ImageBackground, View, Text, Button } from 'react-native';
 
 export default class App extends Component {
-  render() {
-    return (
-      <View style={styles.body}>
-        <ImageBackground source={require('./images/waterbg.png')} style={styles.bgImage}>
-          <View style={styles.infoArea}>
 
-            <View style={styles.area}>
-               <Text style={styles.areaTitulo}>Meta</Text>
-               <Text style={styles.areaDado}>2000 ml</Text>
-            </View>
+   constructor(props){
+      super(props);
+      this.state = {Consumido:0, status:'ruim', pcp:'0'};
+      this.addCopo = this.addCopo.bind(this);
+   }
 
-            <View style={styles.area}>
-               <Text style={styles.areaTitulo}>Consumido</Text>
-               <Text style={styles.areaDado}>1200 ml</Text>
-            </View>
+   addCopo(){
+      let s = this.state;
+      s.Consumido += 200;
+      this.setState(s);
 
-            <View style={styles.area}>
-               <Text style={styles.areaTitulo}>Status</Text>
-               <Text style={styles.areaDado}>Bom</Text>
-            </View>
+      this.atualizar();
+   }
 
-          </View>
-        </ImageBackground>
-      </View>
-    );
+   atualizar(){
+      let s = this.state;
+      s.pcp = Math.floor(((s.Consumido/2000)*100));
+      s.status = s.pcp >= 100 ? "Bom" : "Ruim";
+      this.setState(s);
+   }
+   
+   render() {
+      return (
+         <View style={styles.body}>
+            <ImageBackground source={require('./images/waterbg.png')} style={styles.bgImage}>
+                  <View>
+
+                     <View style={styles.infoArea}>
+                        <View style={styles.area}>
+                           <Text style={styles.areaTitulo}>Meta</Text>
+                           <Text style={styles.areaDado}>2000 ml</Text>
+                        </View>
+                        <View style={styles.area}>
+                           <Text style={styles.areaTitulo}>Consumido</Text>
+                           <Text style={styles.areaDado}>{this.state.Consumido}ml</Text>
+                        </View>
+                        <View style={styles.area}>
+                           <Text style={styles.areaTitulo}>Status</Text>
+                           <Text style={styles.areaDado}>{this.state.status}</Text>
+                        </View>                  
+                     </View>
+
+                     <View>
+                        <View style={styles.pctArea}>
+                           <Text style={styles.pctTexto}>{this.state.pcp}%</Text>
+                        </View>
+                        <View style={styles.btnArea}>
+                           <Button title="Beber um copo" onPress={this.addCopo}/>
+                        </View>
+                     </View>
+
+                  </View>          
+            </ImageBackground>
+         </View>
+      );
   }
 }
 
@@ -42,7 +73,7 @@ const styles = StyleSheet.create({
   infoArea:{
     flex:1,
     flexDirection:'row',
-    paddingTop: 50
+    paddingTop: 70
   },
   area:{
      flex:1,
@@ -54,7 +85,21 @@ const styles = StyleSheet.create({
   areaDado:{
      color:'#2b4274',
      fontSize:15,
-     alignItems: 'center',
-     fontWeight:'bold'
+     fontWeight:'bold',
+     alignItems:'center'
+  },
+  pctArea:{
+     marginTop: 120,
+     alignItems:'center'
+  },
+  pctTexto:{
+     fontSize:70,
+     color:'#FFFFFF',
+     fontWeight: 'bold',
+     backgroundColor:'transparent'
+  },
+  btnArea:{
+     marginTop:30,
+     alignItems:'center'
   }
 });
